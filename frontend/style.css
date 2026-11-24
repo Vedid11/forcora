@@ -1092,3 +1092,101 @@ body {
     min-width: 650px;
   }
 }
+
+
+/* =====================================
+   FORCORA - DASHBOARD ACTION LAYOUT FIX
+===================================== */
+
+.dashboard-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 25px;
+    flex-wrap: wrap;
+}
+
+.dashboard-title {
+    flex: 1 1 250px;
+    min-width: 0;
+}
+
+.dashboard-actions {
+    flex: 0 1 auto;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 10px;
+}
+
+.action-cards {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 285px));
+    grid-template-areas:
+        "upload single"
+        "status status";
+    gap: 10px 14px;
+    align-items: start;
+}
+
+.upload-box {
+    grid-area: upload;
+    width: 100%;
+    min-width: 0;
+}
+
+.single-box {
+    grid-area: single;
+    width: 100%;
+    min-width: 0;
+}
+
+#csvUploadStatus {
+    grid-area: status;
+    width: 100%;
+    max-width: 100%;
+    min-height: 20px;
+    margin: 0;
+    padding: 4px 0;
+    font-size: 13px;
+    line-height: 1.5;
+    overflow-wrap: anywhere;
+    text-align: left;
+}
+
+/* Responsive layout */
+@media (max-width: 1200px) {
+    .dashboard-heading {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .dashboard-actions {
+        align-items: flex-start;
+        width: 100%;
+    }
+
+    .action-cards {
+        width: 100%;
+    }
+}
+
+@media (max-width: 700px) {
+    .action-cards {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            "upload"
+            "single"
+            "status";
+        width: 100%;
+    }
+
+    .dashboard-actions {
+        width: 100%;
+    }
+
+    .action-card {
+        width: 100%;
+    }
+}

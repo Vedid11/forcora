@@ -177,34 +177,32 @@
           <div class="action-cards">
 
 
-            <!-- Upload CSV -->
-            <div class="action-card upload-box">
+            
+<!-- Upload CSV -->
+<div class="action-card upload-box">
+  <div class="action-icon upload-action-icon">
+    <svg viewBox="0 0 24 24">
+      <path d="M12 16V4M12 4L8 8M12 4L16 8M5 14V20H19V14"/>
+    </svg>
+  </div>
 
-              <div class="action-icon upload-action-icon">
+  <div class="action-content">
+    <h3>Upload CSV</h3>
+    <p>Upload multiple reviews from a CSV file</p>
+  </div>
 
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 16V4M12 4L8 8M12 4L16 8M5 14V20H19V14"/>
-                </svg>
+  <span class="action-arrow">→</span>
 
-              </div>
+  <input
+    type="file"
+    id="csvFileInput"
+    accept=".csv,text/csv"
+    hidden
+  >
+</div>
 
+<p id="csvUploadStatus"></p>
 
-              <div class="action-content">
-
-                <h3>Upload CSV</h3>
-
-                <p>
-                  Upload multiple reviews from a CSV file
-                </p>
-
-              </div>
-
-
-              <span class="action-arrow">
-                →
-              </span>
-
-            </div>
 
 
 
@@ -484,7 +482,7 @@
         </div>
 
         <div class="chart-box">
-          <h3><h3>Category-wise Review Count</h3></h3>
+          <h3>Category-wise Review Count</h3>
           <div class="bar-chart category-bar-chart">
             <div class="bar-item">
               <span class="bar-value">312</span>
@@ -552,7 +550,7 @@
 
 
           <tbody>
-<tbody>
+
   <!-- Review 1 -->
   <tr>
     <td>1</td>
