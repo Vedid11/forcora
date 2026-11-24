@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>FORCORA Dashboard</title>
+
+  <link rel="stylesheet" href="style.css">
+</head>
+
+
+<body>
+
+  <div class="container">
+
+
+    <!-- =========================
+         SIDEBAR
+    ========================== -->
+
+    <aside class="sidebar">
+
+      <!-- Logo -->
+      <div class="logo">
+        FOR<span>CORA</span>
+      </div>
+
+
+      <!-- Main Menu -->
+      <ul class="sidebar-menu">
+
+        <li class="active">
+
+          <svg viewBox="0 0 24 24">
+            <path d="M3 11L12 4L21 11V20H15V14H9V20H3V11Z"/>
+          </svg>
+
+          <span>Dashboard</span>
+
+        </li>
+
+
+        <li>
+
+          <svg viewBox="0 0 24 24">
+            <path d="M12 16V4M12 4L8 8M12 4L16 8M5 14V20H19V14"/>
+          </svg>
+
+          <span>Upload Reviews</span>
+
+        </li>
+
+
+        <li>
+
+          <svg viewBox="0 0 24 24">
+            <path d="M6 3H18V21H6V3ZM9 8H15M9 12H15M9 16H15"/>
+          </svg>
+
+          <span>Review Explorer</span>
+
+        </li>
+
+      </ul>
+
+
+      <!-- Bottom Menu -->
+      <div class="sidebar-bottom">
+
+        <div class="bottom-item">
+
+          <svg viewBox="0 0 24 24">
+            <circle cx="12" cy="12" r="3"/>
+            <path d="M19 12A7 7 0 1 1 5 12A7 7 0 1 1 19 12"/>
+          </svg>
+
+          <span>Settings</span>
+
+        </div>
+
+
+        <div class="bottom-item">
+
+          <svg viewBox="0 0 24 24">
+            <path d="M10 5H5V19H10M14 8L18 12L14 16M18 12H9"/>
+          </svg>
+
+          <span>Logout</span>
+
+        </div>
+
+      </div>
+
+    </aside>
+
+
+
+    <!-- =========================
+         MAIN CONTENT
+    ========================== -->
+
+    <main class="main-content">
+
+
+      <!-- =========================
+           TOP BAR
+      ========================== -->
+
+      <div class="topbar">
+
+
+        <!-- Search -->
+        <div class="search-box">
+
+          <input
+            type="text"
+            placeholder="Search reviews, keywords..."
+          >
+
+        </div>
+
+
+        <!-- Right Side -->
+        <div class="top-right">
+
+          <select>
+            <option>Last 30 days</option>
+          </select>
+
+
+          <div class="profile">
+
+            <div class="profile-circle">
+              PY
+            </div>
+
+            <span>Parth Yadav</span>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =========================
+           DASHBOARD HEADING
+      ========================== -->
+
+      <div class="dashboard-heading">
+
+
+        <!-- Left Side -->
+        <div class="dashboard-title">
+
+          <h1>Dashboard</h1>
+
+          <p>
+            Analyze customer reviews and view important insights.
+          </p>
+
+        </div>
+
+
+
+        <!-- Right Side -->
+        <div class="dashboard-actions">
+
+
+          <div class="action-cards">
+
+
+            <!-- Upload CSV -->
+            <div class="action-card upload-box">
+
+              <div class="action-icon upload-action-icon">
+
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 16V4M12 4L8 8M12 4L16 8M5 14V20H19V14"/>
+                </svg>
+
+              </div>
+
+
+              <div class="action-content">
+
+                <h3>Upload CSV</h3>
+
+                <p>
+                  Upload multiple reviews from a CSV file
+                </p>
+
+              </div>
+
+
+              <span class="action-arrow">
+                →
+              </span>
+
+            </div>
+
+
+
+            <!-- Add Single Review -->
+            <div class="action-card single-box">
+
+              <div class="action-icon single-action-icon">
+
+                <svg viewBox="0 0 24 24">
+                  <path d="M12 5V19M5 12H19"/>
+                </svg>
+
+              </div>
+
+
+              <div class="action-content">
+
+                <h3>Add Single Review</h3>
+
+                <p>
+                  Enter one review manually
+                </p>
+
+              </div>
+
+
+              <span class="action-arrow">
+                →
+              </span>
+
+            </div>
+
+          </div>
+
+
+          <!-- Analyze Button -->
+          <button class="analyze-btn">
+            Analyze Reviews
+          </button>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =========================
+           SUMMARY CARDS
+      ========================== -->
+
+      <div class="cards">
+
+
+        <!-- Total Reviews -->
+        <div class="card">
+
+          <div class="card-icon total-icon">
+
+            <svg viewBox="0 0 24 24">
+
+              <rect
+                x="6"
+                y="3"
+                width="12"
+                height="18"
+                rx="2"
+              ></rect>
+
+              <path d="M9 8H15M9 12H15M9 16H13"></path>
+
+            </svg>
+
+          </div>
+
+
+          <div class="card-content">
+
+            <p class="card-title">
+              Total Reviews
+            </p>
+
+
+            <div class="card-bottom">
+
+              <h2>1,248</h2>
+
+
+              <div class="trend-box">
+
+                <span class="increase">
+                  ↗ 12%
+                </span>
+
+                <small>
+                  vs last 30 days
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Privacy-Irrelevant -->
+        <div class="card">
+          <div class="card-icon privacy-icon">
+            <svg viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="9"></circle>
+              <path d="M8 12H16M12 8V16"></path>
+            </svg>
+          </div>
+          <div class="card-content">
+            <p class="card-title">Privacy-Irrelevant</p>
+            <div class="card-bottom">
+              <h2>721</h2>
+              <div class="trend-box">
+                <span class="increase">—</span>
+                <small>reviews classified</small>
+              </div>
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Bug Reports -->
+        <div class="card">
+
+          <div class="card-icon bug-icon">
+
+            <svg viewBox="0 0 24 24">
+
+              <path
+                d="M8 9H16V16C16 18.5 14.2 20 12 20C9.8 20 8 18.5 8 16V9Z"
+              ></path>
+
+              <path
+                d="M9 6L7 4M15 6L17 4"
+              ></path>
+
+              <path
+                d="M5 11H8M16 11H19"
+              ></path>
+
+              <path
+                d="M5 15H8M16 15H19"
+              ></path>
+
+            </svg>
+
+          </div>
+
+
+          <div class="card-content">
+
+            <p class="card-title">
+              Bug Reports
+            </p>
+
+
+            <div class="card-bottom">
+
+              <h2>312</h2>
+
+
+              <div class="trend-box">
+
+                <span class="decrease">
+                  ↘ 8%
+                </span>
+
+                <small>
+                  vs last 30 days
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+
+        <!-- Feature Requests -->
+        <div class="card">
+
+          <div class="card-icon feature-icon">
+
+            <svg viewBox="0 0 24 24">
+
+              <path d="M9 18H15"></path>
+
+              <path d="M10 21H14"></path>
+
+              <path
+                d="M8 14C6.5 12.5 6 10.5 7 8.5C8 6.5 10 5 12 5C14 5 16 6.5 17 8.5C18 10.5 17.5 12.5 16 14C15 15 15 16 15 17H9C9 16 9 15 8 14Z"
+              ></path>
+
+            </svg>
+
+          </div>
+
+
+          <div class="card-content">
+
+            <p class="card-title">
+              Feature Requests
+            </p>
+
+
+            <div class="card-bottom">
+
+              <h2>215</h2>
+
+
+              <div class="trend-box">
+
+                <span class="increase">
+                  ↗ 15%
+                </span>
+
+                <small>
+                  vs last 30 days
+                </small>
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+
+
+      <!-- =========================
+           CATEGORY ANALYTICS
+      ========================== -->
+
+      <div class="charts">
+
+        <div class="chart-box">
+          <h3>Category Distribution</h3>
+          <div class="sentiment-content category-content">
+            <div class="donut-chart category-donut">
+              <div class="donut-center">
+                <h2>1,248</h2>
+                <p>Total Reviews</p>
+              </div>
+            </div>
+
+            <div class="sentiment-legend">
+              <div class="legend-item">
+                <span class="legend-dot bug-dot"></span>
+                <p>Bug Report</p>
+                <strong>25%</strong>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot feature-dot"></span>
+                <p>Feature Request</p>
+                <strong>17.2%</strong>
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot privacy-dot"></span>
+                <p>Privacy-Irrelevant</p>
+                <strong>57.8%</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="chart-box">
+          <h3><h3>Category-wise Review Count</h3></h3>
+          <div class="bar-chart category-bar-chart">
+            <div class="bar-item">
+              <span class="bar-value">312</span>
+              <div class="bar bug-bar"></div>
+              <p>Bug Report</p>
+            </div>
+            <div class="bar-item">
+              <span class="bar-value">215</span>
+              <div class="bar feature-bar"></div>
+              <p>Feature<br>Request</p>
+            </div>
+            <div class="bar-item">
+              <span class="bar-value">721</span>
+              <div class="bar privacy-bar"></div>
+              <p>Privacy-<br>Irrelevant</p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+
+
+      <!-- =========================
+           RECENT REVIEWS
+      ========================== -->
+
+      <div class="recent-reviews">
+
+
+        <div class="recent-header">
+
+          <h3>
+            Recent Reviews
+          </h3>
+
+          <button class="view-all-btn">
+            View All →
+          </button>
+
+        </div>
+
+
+        <table>
+
+
+          <thead>
+
+            <tr>
+
+              <th>#</th>
+
+              <th>Review Text</th>
+
+              <th>Category</th>
+
+              <th>Confidence</th>
+
+              <th>Date</th>
+
+            </tr>
+
+          </thead>
+
+
+
+          <tbody>
+<tbody>
+  <!-- Review 1 -->
+  <tr>
+    <td>1</td>
+    <td>The icon is too small.</td>
+    <td>
+      <span class="badge bug-badge">Bug Report</span>
+    </td>
+    <td>92%</td>
+    <td>02 Oct 2026</td>
+  </tr>
+
+  <!-- Review 2 -->
+  <tr>
+    <td>2</td>
+    <td>Payment page is very slow.</td>
+    <td>
+      <span class="badge bug-badge">Bug Report</span>
+    </td>
+    <td>88%</td>
+    <td>02 Oct 2026</td>
+  </tr>
+
+  <!-- Review 3 -->
+  <tr>
+    <td>3</td>
+    <td>Please add dark mode feature.</td>
+    <td>
+      <span class="badge feature-badge">Feature Request</span>
+    </td>
+    <td>91%</td>
+    <td>01 Oct 2026</td>
+  </tr>
+
+  <!-- Review 4 -->
+  <tr>
+    <td>4</td>
+    <td>The overall experience is smooth and user-friendly.</td>
+    <td>
+      <span class="badge privacy-badge">Privacy-Irrelevant</span>
+    </td>
+    <td>96%</td>
+    <td>01 Oct 2026</td>
+  </tr>
+</tbody>
+
+
+        </table>
+
+      </div>
+
+
+    </main>
+
+  </div>
+   <script src="script.js"></script>
+</body>
+
+</html>
