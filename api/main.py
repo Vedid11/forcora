@@ -1,15 +1,16 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-
 from api.model import predict_review
 from api.schemas import ReviewRequest, PredictionResponse
-
+from api.bulk import router as bulk_router
 
 app = FastAPI(
     title="FORCORA API",
     description="Customer review classification using a trained Random Forest model.",
     version="1.0.0"
 )
+
+app.include_router(bulk_router)
 
 app.add_middleware(
     CORSMiddleware,
@@ -20,6 +21,12 @@ app.add_middleware(
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
+    expose_headers=[
+        "Content-Disposition",
+        "X-Total-Rows",
+        "X-Classified-Rows",
+        "X-Skipped-Rows"
+    ],
 )
 
 
