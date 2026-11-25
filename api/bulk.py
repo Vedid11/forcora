@@ -1,3 +1,4 @@
+
 import csv
 import io
 
@@ -5,6 +6,8 @@ from fastapi import APIRouter, File, Form, HTTPException, UploadFile
 from fastapi.responses import StreamingResponse
 
 from api.model import model, LABELS
+from api.database import SessionLocal
+from api.models import Review
 
 router = APIRouter()
 
@@ -98,6 +101,7 @@ async def predict_bulk(
 
     # Predict all valid reviews together
     predictions = {}
+
     if valid_reviews:
         predicted_labels = model.predict(valid_reviews)
         class_scores = model.predict_proba(valid_reviews)
@@ -109,12 +113,50 @@ async def predict_bulk(
             predictions[row_index] = {
                 "predicted_label": label,
                 "predicted_category": LABELS[label],
-                "confidence": round(float(scores[list(model.classes_).index(label)]), 4),
+                "confidence": round(
+                    float(scores[list(model.classes_).index(label)]), 4
+                ),
                 "class_scores": {
                     LABELS[int(class_id)]: round(float(score), 4)
                     for class_id, score in zip(model.classes_, scores)
                 }
             }
+
+    # Save classified reviews to PostgreSQL
+    db = SessionLocal()
+
+    try:
+        db_reviews = []
+
+        for row_index in valid_row_indices:
+            result = predictions[row_index]
+
+            db_reviews.append(
+                Review(
+                    review_text=rows[row_index][review_column].strip(),
+                    predicted_category=result["predicted_category"],
+                    confidence=result["confidence"],
+                    review_type="CSV"
+                )
+            )
+
+        if db_reviews:
+            db.add_all(db_reviews)
+            db.commit()
+
+        print(f"Saved {len(db_reviews)} CSV reviews to PostgreSQL")
+
+    except Exception as e:
+        db.rollback()
+        print(f"Database error: {e}")
+
+        raise HTTPException(
+            status_code=500,
+            detail="Could not save reviews to database."
+        )
+
+    finally:
+        db.close()
 
     # Prepare downloadable CSV
     output = io.StringIO(newline="")
@@ -151,6 +193,7 @@ async def predict_bulk(
                 "privacy_irrelevant_score": scores.get("Privacy-Irrelevant", ""),
                 "prediction_status": "Classified"
             })
+
         else:
             row.update({
                 "predicted_label": "",

@@ -3,3 +3,5 @@ __pycache__/
 .ipynb_checkpoints/
 *.pyc
 data/raw/privacy_reviews/final_data_unbalanced_121374.csv
+
+.env

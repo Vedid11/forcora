@@ -1,9 +1,6 @@
 
 const API_URL = "http://127.0.0.1:8000";
 
-const STORAGE_KEY = "forcora_added_reviews";
-const CSV_STORAGE_KEY = "forcora_csv_reviews";
-
 // Category counts
 const stats = {
   "Bug Report": 0,
@@ -12,53 +9,10 @@ const stats = {
 };
 
 let totalReviews = 0;
+
+// Data will remain in memory only until page refresh.
 let savedReviews = [];
 let csvSavedReviews = [];
-
-// -----------------------------
-// STORAGE HELPERS
-// -----------------------------
-
-function loadSavedData() {
-  try {
-    savedReviews = JSON.parse(
-      localStorage.getItem(STORAGE_KEY) || "[]"
-    );
-
-    csvSavedReviews = JSON.parse(
-      localStorage.getItem(CSV_STORAGE_KEY) || "[]"
-    );
-
-    if (!Array.isArray(savedReviews)) savedReviews = [];
-    if (!Array.isArray(csvSavedReviews)) csvSavedReviews = [];
-
-  } catch (error) {
-    console.error("Error loading saved reviews:", error);
-    savedReviews = [];
-    csvSavedReviews = [];
-  }
-}
-
-function saveSingleReviews() {
-  localStorage.setItem(
-    STORAGE_KEY,
-    JSON.stringify(savedReviews)
-  );
-}
-
-function saveCSVReviews() {
-  try {
-    localStorage.setItem(
-      CSV_STORAGE_KEY,
-      JSON.stringify(csvSavedReviews)
-    );
-  } catch (error) {
-    console.error("Could not save CSV reviews:", error);
-    throw new Error(
-      "Reviews were classified, but browser storage is full. Please clear some browser storage."
-    );
-  }
-}
 
 // -----------------------------
 // RESET CATEGORY COUNTS
@@ -77,72 +31,24 @@ function resetStats() {
 // -----------------------------
 
 function initializeDashboard() {
-  const cards = document.querySelectorAll(".cards .card");
+  resetStats();
+
   const tbody = document.querySelector(".recent-reviews tbody");
 
-  loadSavedData();
-
-  // If CSV data exists, rebuild the dashboard from saved data.
-  if (csvSavedReviews.length > 0) {
-    resetStats();
-
-    if (tbody) {
-      tbody.innerHTML = "";
-    }
-
-    // Restore CSV reviews.
-    csvSavedReviews.forEach(item => {
-      const category = item.result?.predicted_category;
-
-      if (stats[category] === undefined) return;
-
-      stats[category]++;
-      totalReviews++;
-
-      addReviewToTable(
-        item.review,
-        item.result,
-        item.date,
-        false
-      );
-    });
-
-  } else {
-    // No uploaded CSV exists.
-    // Use the original demo values from HTML.
-    totalReviews = Number(
-      cards[0]?.querySelector("h2")?.textContent.replace(/,/g, "")
-    ) || 0;
-
-    stats["Privacy-Irrelevant"] = Number(
-      cards[1]?.querySelector("h2")?.textContent.replace(/,/g, "")
-    ) || 0;
-
-    stats["Bug Report"] = Number(
-      cards[2]?.querySelector("h2")?.textContent.replace(/,/g, "")
-    ) || 0;
-
-    stats["Feature Request"] = Number(
-      cards[3]?.querySelector("h2")?.textContent.replace(/,/g, "")
-    ) || 0;
+  // Remove hardcoded sample reviews.
+  if (tbody) {
+    tbody.innerHTML = "";
   }
 
-  // Restore Single Reviews.
-  savedReviews.forEach(item => {
-    const category = item.result?.predicted_category;
+  // Clear search field.
+  if (searchInput) {
+    searchInput.value = "";
+  }
 
-    if (stats[category] !== undefined) {
-      stats[category]++;
-      totalReviews++;
-
-      addReviewToTable(
-        item.review,
-        item.result,
-        item.date,
-        false
-      );
-    }
-  });
+  // Remove old upload status.
+  if (csvUploadStatus) {
+    csvUploadStatus.textContent = "";
+  }
 
   updateDashboard();
 }
@@ -327,9 +233,9 @@ async function submitReview() {
       date
     };
 
-    // Save Single Review.
+    // Keep this review in memory for the current page session.
+    // Backend saves the permanent record in PostgreSQL.
     savedReviews.push(newReview);
-    saveSingleReviews();
 
     stats[category]++;
     totalReviews++;
@@ -458,13 +364,53 @@ function updateCharts() {
 
   const total = bug + feature + privacy;
 
-  if (!total) return;
+  const donut = document.querySelector(".category-donut");
+
+  const donutTotal = document.querySelector(
+    ".category-donut .donut-center h2"
+  );
+
+  const legendValues = document.querySelectorAll(
+    ".category-content .legend-item strong"
+  );
+
+  const barItems = document.querySelectorAll(
+    ".category-bar-chart .bar-item"
+  );
+
+  // Reset all charts when dashboard is empty.
+  if (!total) {
+    if (donut) {
+      donut.style.background = "conic-gradient(#e5e7eb 0% 100%)";
+    }
+
+    if (donutTotal) {
+      donutTotal.textContent = "0";
+    }
+
+    legendValues.forEach(element => {
+      element.textContent = "0.0%";
+    });
+
+    barItems.forEach(item => {
+      const valueElement = item.querySelector(".bar-value");
+      const bar = item.querySelector(".bar");
+
+      if (valueElement) {
+        valueElement.textContent = "0";
+      }
+
+      if (bar) {
+        bar.style.height = "0px";
+      }
+    });
+
+    return;
+  }
 
   const bugPercent = (bug / total) * 100;
   const featurePercent = (feature / total) * 100;
   const privacyPercent = (privacy / total) * 100;
-
-  const donut = document.querySelector(".category-donut");
 
   if (donut) {
     const bugEnd = bugPercent;
@@ -479,17 +425,9 @@ function updateCharts() {
     `;
   }
 
-  const donutTotal = document.querySelector(
-    ".category-donut .donut-center h2"
-  );
-
   if (donutTotal) {
     donutTotal.textContent = total.toLocaleString("en-IN");
   }
-
-  const legendValues = document.querySelectorAll(
-    ".category-content .legend-item strong"
-  );
 
   const percentages = [
     bugPercent,
@@ -500,10 +438,6 @@ function updateCharts() {
   legendValues.forEach((element, index) => {
     element.textContent = `${percentages[index].toFixed(1)}%`;
   });
-
-  const barItems = document.querySelectorAll(
-    ".category-bar-chart .bar-item"
-  );
 
   const values = [bug, feature, privacy];
   const maxValue = Math.max(...values, 1);
@@ -517,7 +451,10 @@ function updateCharts() {
     }
 
     if (bar) {
-      const height = Math.max(8, (values[index] / maxValue) * 180);
+      const height = values[index] === 0
+        ? 0
+        : Math.max(8, (values[index] / maxValue) * 180);
+
       bar.style.height = `${height}px`;
     }
   });
@@ -668,7 +605,7 @@ async function uploadCSV() {
       year: "numeric"
     });
 
-    // Prepare a new CSV review collection.
+    // Prepare CSV reviews for the current page session.
     const newCSVReviews = [];
 
     parsedRows.slice(1).forEach(row => {
@@ -697,11 +634,11 @@ async function uploadCSV() {
       throw new Error("No valid classified reviews were found.");
     }
 
-    // Save the newly uploaded CSV reviews.
+    // Keep CSV results in memory only.
+    // PostgreSQL stores the permanent records.
     csvSavedReviews = newCSVReviews;
-    saveCSVReviews();
 
-    // Rebuild dashboard using CSV + saved Single Reviews.
+    // Rebuild dashboard using current-session reviews.
     resetStats();
 
     const tbody = document.querySelector(".recent-reviews tbody");
@@ -710,7 +647,7 @@ async function uploadCSV() {
       tbody.innerHTML = "";
     }
 
-    // Add all CSV reviews.
+    // Add CSV reviews.
     csvSavedReviews.forEach(item => {
       const category = item.result.predicted_category;
 
@@ -725,7 +662,7 @@ async function uploadCSV() {
       );
     });
 
-    // Add all previously saved Single Reviews.
+    // Add Single Reviews from the current page session.
     savedReviews.forEach(item => {
       const category = item.result?.predicted_category;
 
@@ -777,6 +714,77 @@ async function uploadCSV() {
     csvFileInput.value = "";
   }
 }
+
+// -----------------------------
+// MOBILE HAMBURGER SIDEBAR
+// -----------------------------
+
+const sidebar = document.getElementById("sidebar");
+const sidebarToggle = document.getElementById("sidebarToggle");
+const sidebarClose = document.getElementById("sidebarClose");
+const sidebarOverlay = document.getElementById("sidebarOverlay");
+
+function openSidebar() {
+  if (!sidebar || !sidebarOverlay) return;
+
+  sidebar.classList.add("open");
+  sidebarOverlay.classList.add("show");
+  document.body.classList.add("sidebar-open");
+
+  if (sidebarToggle) {
+    sidebarToggle.setAttribute("aria-expanded", "true");
+  }
+}
+
+function closeSidebar() {
+  if (!sidebar || !sidebarOverlay) return;
+
+  sidebar.classList.remove("open");
+  sidebarOverlay.classList.remove("show");
+  document.body.classList.remove("sidebar-open");
+
+  if (sidebarToggle) {
+    sidebarToggle.setAttribute("aria-expanded", "false");
+  }
+}
+
+if (sidebarToggle) {
+  sidebarToggle.addEventListener("click", openSidebar);
+}
+
+if (sidebarClose) {
+  sidebarClose.addEventListener("click", closeSidebar);
+}
+
+if (sidebarOverlay) {
+  sidebarOverlay.addEventListener("click", closeSidebar);
+}
+
+// Close sidebar after clicking a menu item on mobile.
+if (sidebar) {
+  sidebar.querySelectorAll(".sidebar-menu li, .bottom-item")
+    .forEach(item => {
+      item.addEventListener("click", () => {
+        if (window.innerWidth <= 700) {
+          closeSidebar();
+        }
+      });
+    });
+}
+
+// Close sidebar with Escape key.
+document.addEventListener("keydown", function(event) {
+  if (event.key === "Escape") {
+    closeSidebar();
+  }
+});
+
+// Close sidebar when switching back to desktop.
+window.addEventListener("resize", function() {
+  if (window.innerWidth > 700) {
+    closeSidebar();
+  }
+});
 
 // -----------------------------
 // START DASHBOARD
