@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "forcora"
+version = "1.0.0"
+description = "FORCORA DistilBERT pipeline for multi-class privacy review classification."
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+    "torch>=2.0.0",
+    "transformers>=4.35.0",
+    "pandas>=2.0.0",
+    "numpy>=1.24.0",
+    "matplotlib>=3.7.0",
+]
+
+[project.scripts]
+forcora-train = "run_train:main"
+forcora-eval = "eval_test:main"
+forcora-gui = "gui:main"
+
+[tool.setuptools]
+packages = ["src"]
+py-modules = ["run_train", "eval_test", "gui"]

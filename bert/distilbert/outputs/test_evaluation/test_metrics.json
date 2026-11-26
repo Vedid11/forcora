@@ -1,0 +1,54 @@
+{
+  "dataset": "test_1594.csv",
+  "num_samples": 1594,
+  "checkpoint_evaluated": "G:\\FORCORA\\outputs\\checkpoints\\best_model",
+  "device": "cuda",
+  "gpu_name": "NVIDIA GeForce RTX 2060 SUPER",
+  "inference_duration_seconds": 2.0026,
+  "avg_latency_ms_per_sample": 1.26,
+  "peak_vram_allocated_mb": 436.6,
+  "accuracy": 0.8827,
+  "macro_precision": 0.8701,
+  "macro_recall": 0.8732,
+  "macro_f1": 0.8716,
+  "per_class": {
+    "0": {
+      "name": "Feature Request",
+      "precision": 0.8615,
+      "recall": 0.8663,
+      "f1": 0.8639,
+      "support": 359
+    },
+    "1": {
+      "name": "Bug Report",
+      "precision": 0.8271,
+      "recall": 0.8429,
+      "f1": 0.8349,
+      "support": 420
+    },
+    "2": {
+      "name": "Privacy-Irrelevant",
+      "precision": 0.9217,
+      "recall": 0.9104,
+      "f1": 0.916,
+      "support": 815
+    }
+  },
+  "confusion_matrix": [
+    [
+      311,
+      29,
+      19
+    ],
+    [
+      22,
+      354,
+      44
+    ],
+    [
+      28,
+      45,
+      742
+    ]
+  ]
+}
