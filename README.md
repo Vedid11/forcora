@@ -1,831 +1,527 @@
 # FORCORA
-
 ### For Customer-Oriented Analysis
 
-FORCORA is an NLP-based customer feedback classification system that automatically analyzes app reviews and categorizes them into actionable feedback types.
+**An NLP-powered customer feedback classification system for privacy-related social media application reviews.**
 
-Instead of simply determining whether a review is positive or negative, FORCORA focuses on **understanding why a customer is providing feedback**.
+[![Live Application](https://img.shields.io/badge/Live%20Application-Cloudflare%20Pages-blue)](https://forcora.pages.dev)
+[![Backend API](https://img.shields.io/badge/API-Render-green)](https://forcora-api.onrender.com/docs)
+[![Database](https://img.shields.io/badge/Database-Neon%20PostgreSQL-00E599)](https://neon.tech)
 
-The project is being developed as a university minor project with a production-oriented approach, with the long-term goal of building a complete pipeline from **customer review → NLP classification → API → analytics dashboard**.
-
----
-
-## 📌 Problem Statement
-
-Modern applications receive thousands of customer reviews through platforms such as Google Play Store and Apple App Store.
-
-Manually analyzing these reviews is time-consuming for product teams. More importantly, traditional sentiment analysis such as:
-
-> Positive / Negative / Neutral
-
-does not directly tell developers or product managers what action should be taken.
-
-For example:
-
-> "The application crashes whenever I try to upload a file."
-
-This is not simply a negative review. It represents a **Bug Report**.
-
-Similarly:
-
-> "Please add dark mode."
-
-represents a **Feature Request**.
-
-And:
-
-> "I love this application. It makes my daily routine much easier."
-
-represents **General Feedback**.
-
-FORCORA aims to automatically identify these different types of feedback and convert unstructured customer reviews into structured information that can support product analysis.
+**Live application:** https://forcora.pages.dev  
+**API documentation:** https://forcora-api.onrender.com/docs  
+**GitHub repository:** https://github.com/Vedid11/forcora
 
 ---
 
-# 🎯 Project Objective
+## 1. Project Overview
 
-The primary objective of FORCORA is to develop an NLP-based classification system that automatically categorizes customer reviews into three categories:
+FORCORA (For Customer-Oriented Analysis) is a machine-learning-based application designed to classify customer feedback into meaningful categories.
 
-| Category | Description | Example |
+Rather than performing conventional positive/negative sentiment analysis, FORCORA focuses on identifying the intent behind a review.
+
+The current implementation is demonstrated using privacy-related feedback from social media applications.
+
+The system supports individual review classification and bulk CSV classification through a web interface. Predictions are processed by a FastAPI backend and stored in a PostgreSQL database.
+
+## 2. Problem Statement
+
+Mobile and social media applications receive large volumes of customer reviews. Manually examining these reviews and identifying actionable feedback is time-consuming.
+
+Traditional sentiment analysis does not necessarily distinguish between a requested feature, a reported technical issue, and feedback unrelated to the target categories.
+
+FORCORA addresses this problem by classifying reviews into three categories that can help organize customer feedback for further analysis.
+
+## 3. Project Objectives
+
+- Develop an NLP-based customer review classification system.
+- Explore and preprocess an annotated review dataset.
+- Train and evaluate traditional machine learning models.
+- Experiment with a transformer-based classification model.
+- Compare models using multiple evaluation metrics.
+- Integrate the selected production model with a REST API.
+- Provide single-review and bulk CSV classification.
+- Store classification results in a PostgreSQL database.
+- Deploy the application using cloud hosting services.
+
+## 4. Classification Categories
+
+FORCORA uses the following dataset-specific labels:
+
+| Label | Category | Description |
 |---|---|---|
-| 🐛 **Bug Report** | Reports a problem, failure, crash, or malfunction | "The app crashes when I upload a file." |
-| 💡 **Feature Request** | Requests a new feature or improvement | "Please add dark mode." |
-| 💬 **General Feedback** | General comments that do not represent a specific bug or feature request | "Great app, I use it every day." |
+| 0 | Feature Request | Requests for new features or improvements |
+| 1 | Bug Report | Reports of errors, failures, or technical problems |
+| 2 | Privacy-Irrelevant | Reviews not relevant to the target privacy-related feedback categories |
 
-The project follows an incremental approach:
+**Important:** Privacy-Irrelevant is the actual third dataset category. It should not be interpreted as a general positive-feedback category.
 
-1. Explore and preprocess the dataset
-2. Build traditional machine-learning baselines
-3. Compare different ML models
-4. Experiment with a pretrained transformer model
-5. Select and package the final model
-6. Expose the model through an API
-7. Build a web-based analytics dashboard
+## 5. Dataset
 
----
+The project uses the annotated dataset:
 
-# 🏗️ Overall Project Pipeline
+**Annotated Dataset for User Review Classification in the Privacy Domain for Social Media Applications**
 
-```text
-                         CUSTOMER REVIEWS
-                                │
-                                ▼
-                     ┌─────────────────────┐
-                     │ Data Collection /   │
-                     │ Existing Dataset    │
-                     └──────────┬──────────┘
-                                │
-                                ▼
-                     ┌─────────────────────┐
-                     │ Data Preprocessing  │
-                     └──────────┬──────────┘
-                                │
-                                ▼
-                     ┌─────────────────────┐
-                     │ Exploratory Data    │
-                     │ Analysis            │
-                     └──────────┬──────────┘
-                                │
-                                ▼
-                     ┌─────────────────────┐
-                     │ Train / Test Split  │
-                     └──────────┬──────────┘
-                                │
-                                ▼
-                     ┌─────────────────────┐
-                     │ Text Representation │
-                     │      TF-IDF         │
-                     └──────────┬──────────┘
-                                │
-                    ┌───────────┴───────────┐
-                    ▼                       ▼
-          ┌──────────────────┐    ┌──────────────────┐
-          │ Multinomial      │    │ Random Forest    │
-          │ Naive Bayes      │    │                  │
-          └────────┬─────────┘    └────────┬─────────┘
-                   │                       │
-                   └───────────┬───────────┘
-                               ▼
-                    ┌─────────────────────┐
-                    │ Model Comparison     │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ Transformer Model    │
-                    │     DistilBERT       │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ Final Model          │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ REST API             │
-                    └──────────┬──────────┘
-                               │
-                               ▼
-                    ┌─────────────────────┐
-                    │ Web Dashboard        │
-                    └─────────────────────┘
-```
+- Authors: Farah, Labiba; Kabir, Mohammad Ridwan; Ahmed, Shohel
+- Published: 10 July 2025
+- Dataset repository: https://zenodo.org/records/15852840
+- DOI: https://doi.org/10.5281/zenodo.15852840
+- License: Creative Commons Attribution 4.0 International (CC BY 4.0)
+- Language: English
 
----
+### Dataset splits
 
-# 📊 Dataset
+The processed dataset used in the primary experiments contains 15,945 reviews.
 
-The current development dataset consists of English app/customer reviews annotated for three categories.
-
-The original dataset annotations contain:
-
-- `problem_report`
-- `feature_request`
-- `irrelevant`
-
-For FORCORA, these are mapped to:
-
-```text
-problem_report  →  Bug Report
-feature_request →  Feature Request
-irrelevant      →  General Feedback
-```
-
-After preprocessing and removal of ambiguous/unusable samples, the current processed dataset contains:
-
-**5,895 reviews**
-
-### Class Distribution
-
-| Category | Number of Reviews |
+| Dataset split | Number of reviews |
 |---|---:|
-| Bug Report | 1,863 |
-| Feature Request | 1,046 |
-| General Feedback | 2,986 |
-| **Total** | **5,895** |
+| Training | 12,756 |
+| Validation | 1,595 |
+| Testing | 1,594 |
+| **Total** | **15,945** |
 
-The dataset is not perfectly balanced, so class-level metrics such as precision, recall, and macro F1 are also considered during evaluation.
+The dataset contains the following columns:
 
----
+- `Review`: Original review text
+- `Processed`: Processed review text
+- `Label`: Assigned classification label
 
-# 🔍 Exploratory Data Analysis
+The primary classical machine learning experiments use the original `Review` text.
 
-Before training any model, the dataset is analyzed to understand its structure and quality.
+### Class distribution
 
-The exploration includes:
+| Category | Training | Validation | Testing |
+|---|---:|---:|---:|
+| Feature Request | 2,878 | 360 | 359 |
+| Bug Report | 3,366 | 421 | 420 |
+| Privacy-Irrelevant | 6,512 | 814 | 815 |
+| **Total** | **12,756** | **1,595** | **1,594** |
 
-- Dataset dimensions
-- Column inspection
-- Missing values
-- Label distribution
-- Sample reviews
-- Ambiguous labels
-- Review length statistics
-- Review length distribution
+The dataset is imbalanced, with Privacy-Irrelevant being the largest category. Therefore, macro-averaged evaluation metrics are considered alongside accuracy.
 
-The exploratory analysis is available in:
+## 6. Data Exploration and Preprocessing
 
-```text
-notebooks/01_dataset_exploration.ipynb
-```
+The dataset inspection and preparation process includes:
 
----
+- Dataset structure and column inspection
+- Missing-value checks
+- Class distribution analysis
+- Duplicate review inspection
+- Cross-split overlap checks
+- Review text inspection
+- Exploratory keyword and error analysis
 
-# 🧹 Data Preprocessing
+The original training, validation, and testing splits are retained for the experiments.
 
-The preprocessing pipeline converts the raw dataset into a clean dataset that can be consistently used by all machine-learning experiments.
+The test set is reserved for final evaluation after model selection.
 
-```text
-Raw Dataset
-     │
-     ▼
-Load CSV files
-     │
-     ▼
-Combine datasets
-     │
-     ▼
-Check missing / invalid data
-     │
-     ▼
-Remove ambiguous labels
-     │
-     ▼
-Create FORCORA labels
-     │
-     ▼
-Clean review text
-     │
-     ▼
-Save processed dataset
-```
+## 7. Machine Learning Experiments
 
-The resulting dataset is stored as:
+### 7.1 TF-IDF Feature Extraction
 
-```text
-data/processed/forcora_reviews.csv
-```
+The traditional machine learning models use TF-IDF (Term Frequency–Inverse Document Frequency) to convert text into numerical feature representations.
 
----
+The primary configuration includes:
 
-# 🤖 Machine Learning Pipeline
+- Maximum features: 10,000
+- N-gram range: Unigrams and bigrams (1, 2)
+- Minimum document frequency: 2
+- Sublinear term frequency scaling: Enabled
 
-## 1. Train/Test Split
+The vectorizer is fitted on training data and then applied to validation and test data.
 
-The processed dataset is divided into:
+### 7.2 Multinomial Naive Bayes
 
-```text
-80% → Training Data
-20% → Testing Data
-```
+Multinomial Naive Bayes was implemented as the initial classical machine learning baseline.
 
-A stratified split is used to maintain approximately the same class distribution in both subsets.
+**Validation results:**
 
-The test set is kept separate from model training and is used only for evaluation.
-
----
-
-# 📝 TF-IDF
-
-Traditional machine-learning algorithms cannot directly process raw text.
-
-FORCORA therefore uses **TF-IDF (Term Frequency–Inverse Document Frequency)** to convert customer reviews into numerical feature vectors.
-
-Conceptually:
-
-```text
-"The app crashes during upload"
-              │
-              ▼
-            TF-IDF
-              │
-              ▼
-     Numerical feature vector
-```
-
-The current configuration uses:
-
-- Lowercase conversion
-- English stop-word removal
-- Unigrams and bigrams
-- Maximum feature vocabulary of 10,000
-
-To prevent data leakage:
-
-```text
-Training data → fit_transform()
-Testing data  → transform()
-```
-
-The TF-IDF vectorizer is fitted only on the training data.
-
----
-
-# 🧠 Model 1 — Multinomial Naive Bayes
-
-Multinomial Naive Bayes is used as the initial baseline model.
-
-The purpose of this model is to establish a reference point for subsequent experiments.
-
-### Results
-
-| Metric | Result |
+| Metric | Score |
 |---|---:|
-| Accuracy | **80.07%** |
-| Macro F1 | **0.67** |
-| Weighted F1 | **0.76** |
+| Accuracy | 84.39% |
+| Macro Precision | 0.8424 |
+| Macro Recall | 0.8195 |
+| Macro F1 | 0.8296 |
 
-### Class-Level Performance
+### 7.3 Random Forest
 
-| Category | Precision | Recall | F1 |
-|---|---:|---:|---:|
-| Bug Report | 0.75 | 0.91 | 0.82 |
-| Feature Request | 0.95 | 0.19 | 0.32 |
-| General Feedback | 0.83 | 0.94 | 0.88 |
+Random Forest was evaluated using the TF-IDF representation.
 
-The main weakness of the baseline was **Feature Request recall**.
+The configuration uses:
 
-Although the model had high precision for Feature Requests, it identified only a relatively small proportion of the actual Feature Requests.
+- Number of estimators: 200
+- Maximum depth: None
+- Class weighting: Balanced
+- Random state: 42
+- Parallel processing: Enabled
 
-This motivated the evaluation of another classical machine-learning algorithm.
+**Validation results:**
 
----
-
-# 🌲 Model 2 — Random Forest
-
-Random Forest was evaluated using the same processed dataset, train/test split, and TF-IDF representation.
-
-### Results
-
-| Metric | Result |
+| Metric | Score |
 |---|---:|
-| Accuracy | **82.44%** |
-| Macro F1 | **0.78** |
-| Weighted F1 | **0.82** |
+| Accuracy | 84.64% |
+| Macro Precision | 0.8364 |
+| Macro Recall | 0.8327 |
+| Macro F1 | 0.8344 |
 
-### Class-Level Performance
+Random Forest performed marginally better than Naive Bayes in validation accuracy, recall, and macro F1, while Naive Bayes achieved higher macro precision.
 
-| Category | Precision | Recall | F1 |
-|---|---:|---:|---:|
-| Bug Report | 0.78 | 0.84 | 0.81 |
-| Feature Request | 0.74 | 0.55 | 0.63 |
-| General Feedback | 0.87 | 0.91 | 0.89 |
+Random Forest was selected for the production application.
 
-The most significant improvement was in Feature Request classification.
+### 7.4 DistilBERT Experiment
 
-Feature Request recall improved from:
+A transformer-based experiment using DistilBERT was implemented to investigate whether contextual language representations could improve classification performance.
 
-```text
-Naive Bayes   → 19%
-Random Forest → 55%
-```
+The experiment is maintained separately under:
 
-Feature Request F1 improved from:
+`bert/distilbert/`
 
-```text
-Naive Bayes   → 0.32
-Random Forest → 0.63
-```
+**Test results:**
 
-This demonstrates why FORCORA evaluates models using multiple metrics rather than relying only on accuracy.
+| Metric | Score |
+|---|---:|
+| Accuracy | 88.27% |
+| Macro Precision | 0.8701 |
+| Macro Recall | 0.8732 |
+| Macro F1 | 0.8716 |
 
----
+### 7.5 Final Model Comparison
 
-# 📈 Current Model Comparison
+The following table presents the final test results for Random Forest and DistilBERT, along with the validation results for the Naive Bayes baseline.
 
-| Model | Accuracy | Macro F1 | Feature Request Recall |
-|---|---:|---:|---:|
-| Multinomial Naive Bayes | 80.07% | 0.67 | 19% |
-| Random Forest | **82.44%** | **0.78** | **55%** |
+| Model | Evaluation split | Accuracy | Macro F1 |
+|---|---|---:|---:|
+| Multinomial Naive Bayes | Validation | 84.39% | 0.8296 |
+| Random Forest | Test | 83.19% | 0.8152 |
+| DistilBERT | Test | 88.27% | 0.8716 |
 
-These are the current classical ML baseline results.
+**Interpretation:**
 
-The project will not assume that the current best classical model is the final model. The next stage is to evaluate a pretrained transformer.
+DistilBERT achieved the strongest reported test performance, with a 5.08 percentage-point accuracy improvement and a 0.0564 improvement in macro F1 over Random Forest.
 
----
+The same test CSV file was verified for the Random Forest and DistilBERT evaluations. However, the experiments use separate implementations, so preprocessing and evaluation details should be considered when interpreting the comparison.
 
-# 🤗 Deep Learning — Planned DistilBERT Stage
+**Production model:** Random Forest.
 
-The next major stage is to experiment with **DistilBERT**, a pretrained transformer-based language model.
+DistilBERT remains a separate experimental model and is not currently connected to the deployed API.
 
-The objective is to determine whether contextual language representations can improve customer-feedback classification compared with traditional TF-IDF-based models.
+## 8. Application Architecture
 
-The planned pipeline is:
+FORCORA follows a frontend–backend–database architecture.
 
 ```text
-Customer Review
-       │
-       ▼
-   Tokenizer
-       │
-       ▼
-Token IDs + Attention Mask
-       │
-       ▼
-   DistilBERT
-       │
-       ▼
-Text Representation
-       │
-       ▼
-Classification Layer
-       │
-       ▼
-┌───────────────────────┐
-│ Bug Report            │
-│ Feature Request       │
-│ General Feedback      │
-└───────────────────────┘
+                 USER
+                  |
+                  v
+          CLOUDFLARE PAGES
+            Web Frontend
+                  |
+                  v
+             FASTAPI API
+               (Render)
+                  |
+                  v
+          RANDOM FOREST MODEL
+          TF-IDF + Classifier
+                  |
+                  v
+          CLASSIFICATION RESULT
+                  |
+                  v
+          NEON POSTGRESQL
+          Review Record Storage
 ```
 
-The transformer experiment will be evaluated using the same general evaluation framework as the classical ML models.
+### Application workflow
 
-The final comparison will include:
+1. The user submits an individual review or uploads a CSV file.
+2. The frontend sends the request to the FastAPI backend.
+3. The backend validates the input.
+4. The trained Random Forest pipeline processes the review.
+5. The predicted category and class scores are generated.
+6. The prediction is returned to the frontend.
+7. The classified review is stored in PostgreSQL.
 
-```text
-Multinomial Naive Bayes
-          vs
-Random Forest
-          vs
-DistilBERT
+## 9. Application Features
+
+### Single Review Classification
+
+- Accepts an individual review.
+- Sends the review to the backend API.
+- Returns the predicted category.
+- Displays classification scores.
+
+### Bulk CSV Classification
+
+- Accepts CSV file uploads.
+- Allows selection of the review text column.
+- Classifies valid review rows.
+- Produces a downloadable classified CSV.
+- Includes predicted labels, categories, class scores, and prediction status.
+
+The backend currently enforces a maximum upload size of 10 MB and a maximum of 10,000 data rows.
+
+### Database Integration
+
+Classification records are stored in PostgreSQL.
+
+The `reviews` table includes:
+
+| Column | Description |
+|---|---|
+| `id` | Record identifier |
+| `review_text` | Submitted review |
+| `predicted_category` | Predicted category |
+| `confidence` | Predicted class vote proportion |
+| `review_type` | Single Review or CSV |
+| `created_at` | Record creation timestamp |
+
+The Random Forest class scores are based on tree vote proportions and should not be interpreted as calibrated probabilities.
+
+## 10. Technology Stack
+
+| Component | Technology |
+|---|---|
+| Programming language | Python |
+| Data processing | Pandas, NumPy |
+| Traditional ML | Scikit-learn |
+| NLP feature extraction | TF-IDF |
+| Transformer experiment | DistilBERT |
+| Backend framework | FastAPI |
+| API server | Uvicorn |
+| Input validation | Pydantic |
+| Database | PostgreSQL |
+| Database hosting | Neon |
+| ORM | SQLAlchemy |
+| Model serialization | Joblib |
+| Version control | Git and GitHub |
+| Model file management | Git LFS |
+| Frontend hosting | Cloudflare Pages |
+| Backend hosting | Render |
+
+## 11. Deployment
+
+The application is deployed using three services.
+
+| Component | Platform | Deployment |
+|---|---|---|
+| Frontend | Cloudflare Pages | https://forcora.pages.dev |
+| Backend API | Render | https://forcora-api.onrender.com |
+| Database | Neon PostgreSQL | Hosted PostgreSQL |
+
+### Live Links
+
+- **Application:** https://forcora.pages.dev
+- **API documentation:** https://forcora-api.onrender.com/docs
+- **Backend health endpoint:** https://forcora-api.onrender.com/health
+- **Source code:** https://github.com/Vedid11/forcora
+
+The backend uses environment variables for database configuration and frontend CORS origins. Database credentials are not stored in the repository.
+
+The Random Forest pipeline is stored under `models/` and managed using Git LFS.
+
+## 12. API Endpoints
+
+The FastAPI application exposes the following main endpoints:
+
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | `/` | API welcome message |
+| GET | `/health` | Health check |
+| POST | `/predict` | Classify an individual review |
+| POST | `/predict/bulk` | Classify reviews from a CSV upload |
+
+Interactive API documentation is available at:
+
+https://forcora-api.onrender.com/docs
+
+### Example single-review request
+
+```json
+{
+  "review": "Please add an option to hide my online status"
+}
 ```
 
----
+### Example response
 
-# 🏭 Planned Production Architecture
-
-The long-term goal is to convert the ML experiments into a production-oriented MVP.
-
-```text
-                  CUSTOMER REVIEW
-                         │
-                         ▼
-                ┌─────────────────┐
-                │  Web Dashboard  │
-                └────────┬────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │   REST API      │
-                └────────┬────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │ Text Processing │
-                └────────┬────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │ Trained NLP     │
-                │ Model           │
-                └────────┬────────┘
-                         │
-                         ▼
-              ┌──────────────────────┐
-              │ Classification       │
-              │                      │
-              │ Bug Report           │
-              │ Feature Request      │
-              │ General Feedback     │
-              └──────────┬───────────┘
-                         │
-                         ▼
-                ┌─────────────────┐
-                │ Analytics       │
-                │ Dashboard       │
-                └─────────────────┘
+```json
+{
+  "predicted_label": 0,
+  "predicted_category": "Feature Request",
+  "confidence": 0.775,
+  "class_scores": {
+    "Feature Request": 0.775,
+    "Bug Report": 0.025,
+    "Privacy-Irrelevant": 0.2
+  }
+}
 ```
 
----
+The example scores illustrate the response structure; actual results depend on the input review.
 
-# 🖥️ Planned User Flow
-
-A user will eventually be able to submit a customer review through the dashboard.
-
-Example:
-
-```text
-Input:
-"The application crashes every time I upload a document."
-```
-
-The system will process the review:
-
-```text
-Review
-  ↓
-Frontend
-  ↓
-Backend API
-  ↓
-Preprocessing
-  ↓
-Trained Model
-  ↓
-Prediction
-```
-
-Expected output:
-
-```text
-Category: Bug Report
-```
-
-For batches of reviews, the dashboard can eventually provide:
-
-- Total review count
-- Category distribution
-- Bug Report trends
-- Feature Request trends
-- General Feedback trends
-- Example reviews
-- Filters and search
-- Model confidence
-
----
-
-# 📁 Repository Structure
+## 13. Repository Structure
 
 ```text
 forcora/
 │
+├── api/
+│   ├── main.py
+│   ├── model.py
+│   ├── schemas.py
+│   ├── bulk.py
+│   ├── database.py
+│   ├── models.py
+│   └── test_db.py
+│
+├── bert/
+│   └── distilbert/
+│       ├── src/
+│       ├── DATA/
+│       ├── outputs/
+│       ├── run_train.py
+│       ├── eval_test.py
+│       └── README.md
+│
 ├── data/
 │   ├── raw/
-│   │   └── classification/
-│   │
-│   └── processed/
-│       └── forcora_reviews.csv
+│   │   └── privacy_reviews/
+│   ├── archive/
+│   └── sample_uploads/
 │
-├── notebooks/
-│   ├── 01_dataset_exploration.ipynb
-│   ├── 02_data_preprocessing.ipynb
-│   ├── 03_baseline_naive_bayes.ipynb
-│   ├── 04_random_forest.ipynb
-│   └── 05_model_comparison.ipynb
-│
-├── src/
-│   ├── data/
-│   ├── features/
-│   ├── models/
-│   └── inference/
+├── frontend/
+│   ├── index.html
+│   ├── script.js
+│   └── style.css
 │
 ├── models/
+│   └── forcora_random_forest.joblib
 │
-├── app/
-│   ├── backend/
-│   └── frontend/
+├── notebooks/
+│   ├── 06_privacy_dataset_inspection.ipynb
+│   ├── 07_naivebayes_new_dataset.ipynb
+│   ├── 08_random_forest_new_dataset.ipynb
+│   ├── 09_model_comparison_new_dataset.ipynb
+│   └── 10_error_analysis_new_dataset.ipynb
 │
 ├── requirements.txt
+├── requirements-render.txt
+├── .gitattributes
 ├── .gitignore
 └── README.md
 ```
 
-Some directories are placeholders for upcoming development stages.
+## 14. Local Development Setup
 
----
+### Prerequisites
 
-# 👥 Team Development
-
-FORCORA is being developed by a team of four.
-
-The project can be divided into the following major workstreams:
-
-### ML / NLP
-
-- Dataset preparation
-- Exploratory data analysis
-- Text preprocessing
-- TF-IDF
-- Naive Bayes
-- Random Forest
-- Transformer experimentation
-- Model evaluation
-- Model serialization
-- Inference pipeline
-
-### Backend
-
-- REST API
-- Model loading
-- Prediction endpoint
-- Input validation
-- ML/backend integration
-- Error handling
-
-### Frontend
-
-- Dashboard interface
-- Review input
-- Prediction display
-- Analytics visualizations
-- Filtering and presentation
-
-### Integration / Deployment
-
-- Frontend-backend integration
-- Testing
-- Deployment
-- Repository organization
-- Documentation
-
-The exact division of responsibilities can be adjusted as development progresses.
-
----
-
-# 🗺️ Development Roadmap
-
-## Phase 1 — Dataset & Exploration
-
-- [x] Obtain classification dataset
-- [x] Load and inspect datasets
-- [x] Clean and preprocess data
-- [x] Create FORCORA labels
-- [x] Perform exploratory data analysis
-
-## Phase 2 — Classical ML
-
-- [x] Train/test split
-- [x] TF-IDF feature extraction
-- [x] Multinomial Naive Bayes
-- [x] Random Forest
-- [x] Classification reports
-- [x] Confusion matrices
-- [ ] Consolidated model comparison
-
-## Phase 3 — Deep Learning
-
-- [ ] Learn transformer fundamentals
-- [ ] Implement DistilBERT
-- [ ] Fine-tune transformer
-- [ ] Evaluate transformer
-- [ ] Compare against classical ML
-
-## Phase 4 — Production MVP
-
-- [ ] Select final model
-- [ ] Save trained model
-- [ ] Build inference pipeline
-- [ ] Build REST API
-- [ ] Build frontend dashboard
-- [ ] Connect frontend and backend
-- [ ] Add validation and error handling
-
-## Phase 5 — Deployment
-
-- [ ] Testing
-- [ ] Deployment
-- [ ] API documentation
-- [ ] Final architecture
-- [ ] Technical documentation
-- [ ] Project demonstration
-
----
-
-# 🛠️ Technology Stack
-
-## Current
-
-**Programming**
-
-- Python
-
-**Data Processing**
-
-- Pandas
-- NumPy
-
-**Machine Learning**
-
-- Scikit-learn
-- Multinomial Naive Bayes
-- Random Forest
-
-**NLP**
-
-- TF-IDF
-
-**Visualization**
-
-- Matplotlib
-- Seaborn
-
-**Development**
-
-- Jupyter Notebook
-- VS Code
+- Python 3.11
 - Git
-- GitHub
+- Git LFS
+- PostgreSQL or a compatible hosted PostgreSQL database
 
-## Planned
+### Clone the repository
 
-**Deep Learning / NLP**
-
-- PyTorch
-- Hugging Face Transformers
-- DistilBERT
-
-**Backend**
-
-- FastAPI
-- Uvicorn
-
-**Frontend**
-
-- To be finalized by the frontend team
-
-**Deployment**
-
-- To be finalized during the productionization stage
-
----
-
-# 📏 Evaluation Strategy
-
-FORCORA will evaluate models using multiple metrics.
-
-### Accuracy
-
-Overall percentage of correctly classified reviews.
-
-### Precision
-
-Measures how many reviews predicted as a particular class actually belong to that class.
-
-### Recall
-
-Measures how many of the actual reviews belonging to a class were successfully identified.
-
-### F1 Score
-
-Combines precision and recall.
-
-### Macro F1
-
-Calculates F1 equally across all classes and is useful when class distributions are imbalanced.
-
-### Confusion Matrix
-
-Shows which categories are being confused with one another.
-
----
-
-# 🚀 Current Status
-
-FORCORA is currently in the **classical machine-learning experimentation stage**.
-
-### Completed
-
-```text
-✓ Dataset preparation
-✓ Data preprocessing
-✓ Exploratory data analysis
-✓ Train/test split
-✓ TF-IDF feature extraction
-✓ Multinomial Naive Bayes
-✓ Random Forest
-✓ Classification reports
-✓ Confusion matrices
+```bash
+git clone https://github.com/Vedid11/forcora.git
+cd forcora
+git lfs pull
 ```
 
-### Current Best Classical ML Result
+### Create a virtual environment
 
-```text
-Model: Random Forest
+Windows:
 
-Accuracy: 82.44%
-Macro F1: 0.78
-Feature Request Recall: 55%
+```cmd
+python -m venv .venv
+.venv\Scripts\activate
 ```
 
-### Next Milestone
+### Install dependencies
 
-**DistilBERT transformer experiment**
-
----
-
-# 🔮 Future Scope
-
-The initial MVP can be extended with:
-
-- Automatic review ingestion
-- Google Play Store / App Store integration
-- Batch review processing
-- Sentiment analysis
-- Topic extraction
-- Priority/severity prediction
-- Duplicate issue detection
-- Trend detection
-- Review search
-- Product/version-based analytics
-- Multi-language support
-- Model monitoring
-- Continuous model retraining
-- Cloud deployment
-
-These features are considered future scope and are not required for the initial MVP.
-
----
-
-# 💡 Vision
-
-FORCORA aims to transform unstructured customer feedback into structured, actionable product information.
-
-```text
-Thousands of Reviews
-        │
-        ▼
-      FORCORA
-        │
-        ▼
-┌────────────────────────────┐
-│ Bug Reports                │
-│ Feature Requests           │
-│ General Feedback           │
-└──────────────┬─────────────┘
-               │
-               ▼
-       Product Analytics
-               │
-               ▼
-       Better Understanding
-       of Customer Feedback
+```cmd
+pip install -r requirements.txt
 ```
 
-The project combines:
+### Configure environment variables
 
-**Data Engineering + NLP + Machine Learning + Deep Learning + Backend Development + Frontend Development + Deployment**
+Create a `.env` file in the project root.
 
-with the goal of demonstrating an end-to-end machine-learning product rather than a standalone classification notebook.
+For local PostgreSQL development:
+
+```env
+DB_PASSWORD=your_local_database_password
+```
+
+For a hosted PostgreSQL database, configure:
+
+```env
+DATABASE_URL=your_postgresql_connection_string
+```
+
+Never commit `.env` or expose database credentials.
+
+### Start the backend
+
+From the project root:
+
+```cmd
+.venv\Scripts\python.exe -m uvicorn api.main:app --reload
+```
+
+The local API will be available at:
+
+`http://127.0.0.1:8000`
+
+API documentation:
+
+`http://127.0.0.1:8000/docs`
+
+The API initializes the database table during application startup.
+
+## 15. Limitations
+
+- The current dataset focuses on privacy-related feedback from social media applications. Generalization to unrelated customer-feedback domains has not yet been established.
+- Classification quality depends on the coverage and annotation quality of the training dataset.
+- Some reviews may contain ambiguous or overlapping technical and privacy-related language.
+- The deployed API currently uses Random Forest rather than DistilBERT.
+- Random Forest class vote proportions are not calibrated confidence probabilities.
+- Render's free service may spin down after inactivity, resulting in slower initial requests.
+- The current application provides classification and record storage; broader cross-domain analytics and trend analysis remain potential future extensions.
+
+## 16. Future Scope
+
+Possible future improvements include:
+
+- Integrating DistilBERT into the production API.
+- Evaluating the system on additional customer-feedback domains.
+- Expanding and improving the annotated dataset.
+- Adding more advanced review analytics and visualizations.
+- Introducing trend analysis and time-based reporting.
+- Improving model confidence calibration.
+- Adding authentication and user-specific access controls.
+- Improving deployment scalability and monitoring.
+
+## 17. Conclusion
+
+FORCORA demonstrates an end-to-end machine learning application for classifying privacy-related social media application reviews.
+
+The project covers dataset inspection, preprocessing, traditional machine learning, transformer experimentation, model evaluation, API development, frontend integration, database storage, and cloud deployment.
+
+The deployed application supports individual and bulk review classification, while storing prediction records in a hosted PostgreSQL database.
+
+The experimental results demonstrate the potential of transformer-based models to improve text classification performance, while the Random Forest model provides the current production implementation.
+
+FORCORA establishes a working foundation for organizing unstructured customer feedback into structured, actionable categories.
+
+## 18. Dataset Reference
+
+Farah, L., Kabir, M. R., & Ahmed, S. (2025). *Annotated Dataset for User Review Classification in the Privacy Domain for Social Media Applications*. Zenodo.
+
+https://doi.org/10.5281/zenodo.15852840
+
+Dataset license: CC BY 4.0. Appropriate attribution is required when redistributing or using the dataset.
 
 ---
 
-## 📌 Project Status
-
-**🚧 FORCORA is currently under active development.**
-
-**Current milestone:** Classical ML baseline established.
-
-**Next milestone:** DistilBERT evaluation.
-
----
+**FORCORA — For Customer-Oriented Analysis**  
+*Turning unstructured customer feedback into structured insights.*
