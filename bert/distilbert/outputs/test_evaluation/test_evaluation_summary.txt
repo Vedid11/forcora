@@ -1,0 +1,37 @@
+========================================================================
+FORCORA — DISTILBERT FINAL TEST SET EVALUATION SUMMARY
+========================================================================
+Checkpoint Evaluated:       G:\FORCORA\outputs\checkpoints\best_model
+Test Dataset Path:          G:\FORCORA\DATA\RAW\privacy_reviews\test_1594.csv
+Total Test Samples:         1594
+Input Text Column:          Review (Raw Text, max_length=256)
+Label Column:               Label (3 classes)
+Hardware Used:              NVIDIA GeForce RTX 2060 SUPER (Device: cuda)
+FP16 Autocast:              Enabled
+Total Inference Duration:   2.00 seconds
+Average Latency:            1.26 ms per sample
+Peak GPU VRAM Allocated:    436.6 MiB
+------------------------------------------------------------------------
+OVERALL PERFORMANCE:
+  Test Accuracy:            0.8827 (88.27%)
+  Test Macro-Precision:     0.8701
+  Test Macro-Recall:        0.8732
+  Test Macro-F1:            0.8716 (87.16%)
+------------------------------------------------------------------------
+PER-CLASS CLASSIFICATION REPORT:
+Class                  | Precision  | Recall     | F1-Score   | Support 
+------------------------------------------------------------------------
+Feature Request        | 0.8615     | 0.8663     | 0.8639     | 359     
+Bug Report             | 0.8271     | 0.8429     | 0.8349     | 420     
+Privacy-Irrelevant     | 0.9217     | 0.9104     | 0.9160     | 815     
+------------------------------------------------------------------------
+Macro Average          | 0.8701     | 0.8732     | 0.8716     | 1594    
+Overall Accuracy       | 0.8827    
+------------------------------------------------------------------------
+CONFUSION MATRIX (Rows: True, Columns: Predicted):
+                Pred 0 (Feature)   Pred 1 (Bug)   Pred 2 (Irrel)    Total
+True 0 (Feature)      311                29             19                359
+True 1 (Bug)          22                 354            44                420
+True 2 (Irrel)        28                 45             742               815
+Total Predicted       361                428            805               1594
+========================================================================
