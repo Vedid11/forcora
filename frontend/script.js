@@ -3,7 +3,7 @@
 // FORCORA - JAVASCRIPT
 // ==========================================
 
-const API_URL = "http://127.0.0.1:8000";
+const API_URL = "https://forcora-api.onrender.com";
 
 
 const STORAGE_KEY = "forcora_added_reviews";
