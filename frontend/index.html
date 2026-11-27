@@ -1,409 +1,354 @@
 
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>FORCORA Dashboard</title>
+  <title>FORCORA | Review Analytics</title>
   <link rel="stylesheet" href="style.css">
 </head>
-
 <body>
+<div class="container">
 
-  <div class="container">
+  <aside class="sidebar" id="sidebar">
+    <button class="sidebar-close" id="sidebarClose" aria-label="Close sidebar">&times;</button>
 
-    <!-- SIDEBAR -->
-    <aside class="sidebar" id="sidebar">
+    <div class="brand">
+      <div class="logo">FOR<span>CORA</span></div>
+      <p class="brand-tagline">Customer Intelligence Platform</p>
+    </div>
 
-      <!-- MOBILE CLOSE BUTTON -->
-      <button
-        class="sidebar-close"
-        id="sidebarClose"
-        aria-label="Close sidebar"
-      >
-        &times;
-      </button>
+    <p class="menu-label">WORKSPACE</p>
 
-      <div class="logo">
-        FOR<span>CORA</span>
+    <ul class="sidebar-menu">
+      <li class="active" data-page="overview">
+        <span class="nav-icon">⌂</span><span>Overview</span>
+      </li>
+      <li data-page="upload">
+        <span class="nav-icon">⇧</span><span>Upload Reviews</span>
+      </li>
+      <li data-page="explorer">
+        <span class="nav-icon">▤</span><span>Review Explorer</span>
+      </li>
+      <li data-page="analytics">
+        <span class="nav-icon">▥</span><span>Analytics</span>
+      </li>
+    </ul>
+
+    <div class="sidebar-bottom">
+      <div class="bottom-item" data-page="settings">
+        <span class="nav-icon">⚙</span><span>Settings</span>
+      </div>
+      <div class="bottom-item" data-page="help">
+        <span class="nav-icon">?</span><span>Help & Support</span>
       </div>
 
-      <ul class="sidebar-menu">
-
-        <li class="active">
-          <svg viewBox="0 0 24 24">
-            <path d="M3 11L12 4L21 11V20H15V14H9V20H3V11Z"/>
-          </svg>
-          <span>Dashboard</span>
-        </li>
-
-        <li>
-          <svg viewBox="0 0 24 24">
-            <path d="M12 16V4M12 4L8 8M12 4L16 8M5 14V20H19V14"/>
-          </svg>
-          <span>Upload Reviews</span>
-        </li>
-
-        <li>
-          <svg viewBox="0 0 24 24">
-            <path d="M6 3H18V21H6V3ZM9 8H15M9 12H15M9 16H15"/>
-          </svg>
-          <span>Review Explorer</span>
-        </li>
-
-      </ul>
-
-      <div class="sidebar-bottom">
-
-        <div class="bottom-item">
-          <svg viewBox="0 0 24 24">
-            <circle cx="12" cy="12" r="3"/>
-            <path d="M19 12A7 7 0 1 1 5 12A7 7 0 1 1 19 12"/>
-          </svg>
-          <span>Settings</span>
+      <div class="sidebar-user">
+        <div class="sidebar-user-info">
+          <strong>Login</strong>
+          <span>Project Admin</span>
         </div>
+        <span class="user-menu-icon">•••</span>
+      </div>
+    </div>
+  </aside>
 
-        <div class="bottom-item">
-          <svg viewBox="0 0 24 24">
-            <path d="M10 5H5V19H10M14 8L18 12L14 16M18 12H9"/>
-          </svg>
-          <span>Logout</span>
-        </div>
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+  <main class="main-content">
+    <div class="topbar">
+      <button class="hamburger-btn" id="sidebarToggle" aria-label="Open sidebar" aria-controls="sidebar" aria-expanded="false">☰</button>
+
+      <div class="search-box">
+        <input type="text" id="globalSearch" placeholder="Search reviews, keywords...">
       </div>
 
-    </aside>
+      <div class="top-right">
+        <select id="dateFilter">
+          <option>Last 30 days</option>
+          <option>Last 7 days</option>
+          <option>Last 90 days</option>
+          <option>All time</option>
+        </select>
 
-    <!-- SIDEBAR OVERLAY -->
-    <div
-      class="sidebar-overlay"
-      id="sidebarOverlay"
-    ></div>
-
-    <!-- MAIN CONTENT -->
-    <main class="main-content">
-
-      <!-- TOP BAR -->
-      <div class="topbar">
-
-        <!-- MOBILE HAMBURGER BUTTON -->
-        <button
-          class="hamburger-btn"
-          id="sidebarToggle"
-          aria-label="Open sidebar"
-          aria-controls="sidebar"
-          aria-expanded="false"
-        >
-          ☰
-        </button>
-
-        <div class="search-box">
-          <input
-            type="text"
-            placeholder="Search reviews, keywords..."
-          >
+        <div class="profile">
+          <span>Login</span>
         </div>
-
-        <div class="top-right">
-
-          <select>
-            <option>Last 30 days</option>
-          </select>
-
-          <div class="profile">
-            <div class="profile-circle">PY</div>
-            <span>Parth Yadav</span>
-          </div>
-
-        </div>
-
       </div>
+    </div>
 
-      <!-- DASHBOARD HEADING -->
+    <!-- OVERVIEW -->
+    <section class="page-section active" id="overview">
       <div class="dashboard-heading">
-
         <div class="dashboard-title">
-          <h1>Dashboard</h1>
+          <h1>Overview</h1>
           <p>Analyze customer reviews and view important insights.</p>
         </div>
-
         <div class="dashboard-actions">
-
-          <div class="action-cards">
-
-            <!-- UPLOAD CSV -->
-            <div class="action-card upload-box">
-
-              <div class="action-icon upload-action-icon">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 16V4M12 4L8 8M12 4L16 8M5 14V20H19V14"/>
-                </svg>
-              </div>
-
-              <div class="action-content">
-                <h3>Upload CSV</h3>
-                <p>Upload multiple reviews from a CSV file</p>
-              </div>
-
-              <span class="action-arrow">→</span>
-
-              <input
-                type="file"
-                id="csvFileInput"
-                accept=".csv,text/csv"
-                hidden
-              >
-
-            </div>
-
-            <p id="csvUploadStatus"></p>
-
-            <!-- SINGLE REVIEW -->
-            <div class="action-card single-box">
-
-              <div class="action-icon single-action-icon">
-                <svg viewBox="0 0 24 24">
-                  <path d="M12 5V19M5 12H19"/>
-                </svg>
-              </div>
-
-              <div class="action-content">
-                <h3>Add Single Review</h3>
-                <p>Enter one review manually</p>
-              </div>
-
-              <span class="action-arrow">→</span>
-
-            </div>
-
-          </div>
-
-          <button class="analyze-btn">
-            Analyze Reviews
-          </button>
-
+          <button class="analyze-btn" id="goToUpload">+ Upload Reviews</button>
         </div>
-
       </div>
 
-      <!-- SUMMARY CARDS -->
       <div class="cards">
-
-        <!-- TOTAL REVIEWS -->
         <div class="card">
-
-          <div class="card-icon total-icon">
-            <svg viewBox="0 0 24 24">
-              <rect x="6" y="3" width="12" height="18" rx="2"></rect>
-              <path d="M9 8H15M9 12H15M9 16H13"></path>
-            </svg>
-          </div>
-
+          <div class="card-icon total-icon">▤</div>
           <div class="card-content">
             <p class="card-title">Total Reviews</p>
-
             <div class="card-bottom">
-              <h2>0</h2>
-
-              <div class="trend-box">
-                <span class="increase">—</span>
-                <small>Current session</small>
-              </div>
+              <h2 id="totalReviews">0</h2>
+              <div class="trend-box"><span>—</span><small>Current session</small></div>
             </div>
           </div>
-
         </div>
 
-        <!-- PRIVACY IRRELEVANT -->
         <div class="card">
-
-          <div class="card-icon privacy-icon">
-            <svg viewBox="0 0 24 24">
-              <circle cx="12" cy="12" r="9"></circle>
-              <path d="M8 12H16M12 8V16"></path>
-            </svg>
-          </div>
-
+          <div class="card-icon privacy-icon">◎</div>
           <div class="card-content">
             <p class="card-title">Privacy-Irrelevant</p>
-
             <div class="card-bottom">
-              <h2>0</h2>
-
-              <div class="trend-box">
-                <span class="increase">—</span>
-                <small>Reviews classified</small>
-              </div>
+              <h2 id="privacyCount">0</h2>
+              <div class="trend-box"><span>—</span><small>Reviews classified</small></div>
             </div>
           </div>
-
         </div>
 
-        <!-- BUG REPORTS -->
         <div class="card">
-
-          <div class="card-icon bug-icon">
-            <svg viewBox="0 0 24 24">
-              <path d="M8 9H16V16C16 18.5 14.2 20 12 20C9.8 20 8 18.5 8 16V9Z"></path>
-              <path d="M9 6L7 4M15 6L17 4"></path>
-              <path d="M5 11H8M16 11H19"></path>
-              <path d="M5 15H8M16 15H19"></path>
-            </svg>
-          </div>
-
+          <div class="card-icon bug-icon">⚒</div>
           <div class="card-content">
             <p class="card-title">Bug Reports</p>
-
             <div class="card-bottom">
-              <h2>0</h2>
-
-              <div class="trend-box">
-                <span class="decrease">—</span>
-                <small>Reviews classified</small>
-              </div>
+              <h2 id="bugCount">0</h2>
+              <div class="trend-box"><span>—</span><small>Reviews classified</small></div>
             </div>
           </div>
-
         </div>
 
-        <!-- FEATURE REQUESTS -->
         <div class="card">
-
-          <div class="card-icon feature-icon">
-            <svg viewBox="0 0 24 24">
-              <path d="M9 18H15"></path>
-              <path d="M10 21H14"></path>
-              <path d="M8 14C6.5 12.5 6 10.5 7 8.5C8 6.5 10 5 12 5C14 5 16 6.5 17 8.5C18 10.5 17.5 12.5 16 14C15 15 15 16 15 17H9C9 16 9 15 8 14Z"></path>
-            </svg>
-          </div>
-
+          <div class="card-icon feature-icon">✧</div>
           <div class="card-content">
             <p class="card-title">Feature Requests</p>
-
             <div class="card-bottom">
-              <h2>0</h2>
-
-              <div class="trend-box">
-                <span class="increase">—</span>
-                <small>Reviews classified</small>
-              </div>
+              <h2 id="featureCount">0</h2>
+              <div class="trend-box"><span>—</span><small>Reviews classified</small></div>
             </div>
           </div>
-
         </div>
-
       </div>
 
-      <!-- CATEGORY ANALYTICS -->
       <div class="charts">
-
-        <!-- DONUT CHART -->
         <div class="chart-box">
-
           <h3>Category Distribution</h3>
-
           <div class="sentiment-content category-content">
-
             <div class="donut-chart category-donut">
-
               <div class="donut-center">
-                <h2>0</h2>
-                <p>Total Reviews</p>
+                <h2>0</h2><p>Total Reviews</p>
               </div>
-
             </div>
-
             <div class="sentiment-legend">
-
               <div class="legend-item">
-                <span class="legend-dot bug-dot"></span>
-                <p>Bug Report</p>
-                <strong>0.0%</strong>
+                <span class="legend-dot bug-dot"></span><p>Bug Report</p><strong>0.0%</strong>
               </div>
-
               <div class="legend-item">
-                <span class="legend-dot feature-dot"></span>
-                <p>Feature Request</p>
-                <strong>0.0%</strong>
+                <span class="legend-dot feature-dot"></span><p>Feature Request</p><strong>0.0%</strong>
               </div>
-
               <div class="legend-item">
-                <span class="legend-dot privacy-dot"></span>
-                <p>Privacy-Irrelevant</p>
-                <strong>0.0%</strong>
+                <span class="legend-dot privacy-dot"></span><p>Privacy-Irrelevant</p><strong>0.0%</strong>
               </div>
-
             </div>
-
           </div>
         </div>
 
-        <!-- BAR CHART -->
         <div class="chart-box">
-
           <h3>Category-wise Review Count</h3>
-
           <div class="bar-chart category-bar-chart">
-
             <div class="bar-item">
-              <span class="bar-value">0</span>
-              <div class="bar bug-bar" style="height: 0px;"></div>
-              <p>Bug Report</p>
+              <span class="bar-value">0</span><div class="bar bug-bar" style="height:0"></div><p>Bug Report</p>
             </div>
-
             <div class="bar-item">
-              <span class="bar-value">0</span>
-              <div class="bar feature-bar" style="height: 0px;"></div>
-              <p>Feature<br>Request</p>
+              <span class="bar-value">0</span><div class="bar feature-bar" style="height:0"></div><p>Feature Request</p>
             </div>
-
             <div class="bar-item">
-              <span class="bar-value">0</span>
-              <div class="bar privacy-bar" style="height: 0px;"></div>
-              <p>Privacy-<br>Irrelevant</p>
+              <span class="bar-value">0</span><div class="bar privacy-bar" style="height:0"></div><p>Privacy-Irrelevant</p>
             </div>
-
           </div>
         </div>
-
       </div>
 
-      <!-- RECENT REVIEWS -->
       <div class="recent-reviews">
-
         <div class="recent-header">
           <h3>Recent Reviews</h3>
-
-          <button class="view-all-btn">
-            View All →
-          </button>
+          <button class="view-all-btn" data-page="explorer">View All →</button>
         </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Review Text</th><th>Category</th><th>Confidence</th><th>Date</th></tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </section>
 
-        <table>
-
-          <thead>
-            <tr>
-              <th>#</th>
-              <th>Review Text</th>
-              <th>Category</th>
-              <th>Confidence</th>
-              <th>Date</th>
-            </tr>
-          </thead>
-
-          <tbody>
-          </tbody>
-
-        </table>
-
+    <!-- UPLOAD REVIEWS -->
+    <section class="page-section" id="upload">
+      <div class="page-heading">
+        <h1>Upload Reviews</h1>
+        <p>Upload customer reviews or add a single review for classification.</p>
       </div>
 
-    </main>
+      <div class="upload-page-grid">
+        <div class="upload-panel">
+          <div class="panel-icon">⇧</div>
+          <h2>Upload CSV File</h2>
+          <p>Upload a CSV file containing multiple customer reviews.</p>
+          <label for="csvFileInput" class="upload-dropzone">
+            <span class="upload-symbol">☁</span>
+            <strong>Click to browse CSV file</strong>
+            <small>Supported format: .csv</small>
+          </label>
+          <input type="file" id="csvFileInput" accept=".csv,text/csv" hidden>
+          <p id="csvUploadStatus" class="upload-status"></p>
+        </div>
 
-  </div>
+        <div class="upload-panel single-upload-panel">
+          <div class="panel-icon">＋</div>
+          <h2>Add Single Review</h2>
+          <p>Enter one customer review manually.</p>
+          <button class="analyze-btn" id="addSingleReview">Add Single Review</button>
+        </div>
+      </div>
 
-  <script src="script.js"></script>
+      <div class="recent-reviews upload-history">
+        <div class="recent-header"><h3>Upload Instructions</h3></div>
+        <ul class="instruction-list">
+          <li>Upload a valid CSV file.</li>
+          <li>Make sure the review column is named Review.</li>
+          <li>FORCORA will classify the uploaded reviews.</li>
+          <li>The classified CSV file will be downloaded automatically.</li>
+        </ul>
+      </div>
+    </section>
 
+    <!-- REVIEW EXPLORER -->
+    <section class="page-section" id="explorer">
+      <div class="page-heading">
+        <h1>Review Explorer</h1>
+        <p>Explore and search your classified customer reviews.</p>
+      </div>
+
+      <div class="explorer-filters">
+        <input type="text" id="reviewSearch" placeholder="Search review text...">
+        <select id="categoryFilter">
+          <option value="all">All Categories</option>
+          <option value="Bug Report">Bug Report</option>
+          <option value="Feature Request">Feature Request</option>
+          <option value="Privacy-Irrelevant">Privacy-Irrelevant</option>
+        </select>
+      </div>
+
+      <div class="recent-reviews explorer-table">
+        <div class="recent-header">
+          <h3>All Customer Reviews</h3>
+          <span id="explorerReviewCount">0 Reviews</span>
+        </div>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr><th>#</th><th>Review Text</th><th>Category</th><th>Confidence</th><th>Date</th></tr>
+            </thead>
+            <tbody id="explorerTableBody"></tbody>
+          </table>
+        </div>
+        <p class="empty-state" id="explorerEmpty">No reviews available. Upload a CSV file or add a single review.</p>
+      </div>
+    </section>
+
+    <!-- ANALYTICS -->
+    <section class="page-section" id="analytics">
+      <div class="page-heading">
+        <h1>Analytics</h1>
+        <p>Understand review categories and classification patterns.</p>
+      </div>
+
+      <div class="analytics-summary cards">
+        <div class="card"><div class="card-content"><p class="card-title">Total Reviews</p><h2 id="analyticsTotal">0</h2></div></div>
+        <div class="card"><div class="card-content"><p class="card-title">Bug Reports</p><h2 id="analyticsBugs">0</h2></div></div>
+        <div class="card"><div class="card-content"><p class="card-title">Feature Requests</p><h2 id="analyticsFeatures">0</h2></div></div>
+        <div class="card"><div class="card-content"><p class="card-title">Privacy-Irrelevant</p><h2 id="analyticsPrivacy">0</h2></div></div>
+      </div>
+
+      <div class="charts">
+        <div class="chart-box">
+          <h3>Category Distribution</h3>
+          <div class="sentiment-content category-content">
+            <div class="donut-chart category-donut">
+              <div class="donut-center"><h2>0</h2><p>Total Reviews</p></div>
+            </div>
+            <div class="sentiment-legend">
+              <div class="legend-item"><span class="legend-dot bug-dot"></span><p>Bug Report</p><strong>0.0%</strong></div>
+              <div class="legend-item"><span class="legend-dot feature-dot"></span><p>Feature Request</p><strong>0.0%</strong></div>
+              <div class="legend-item"><span class="legend-dot privacy-dot"></span><p>Privacy-Irrelevant</p><strong>0.0%</strong></div>
+            </div>
+          </div>
+        </div>
+        <div class="chart-box">
+          <h3>Category-wise Review Count</h3>
+          <div class="bar-chart category-bar-chart">
+            <div class="bar-item"><span class="bar-value">0</span><div class="bar bug-bar" style="height:0"></div><p>Bug Report</p></div>
+            <div class="bar-item"><span class="bar-value">0</span><div class="bar feature-bar" style="height:0"></div><p>Feature Request</p></div>
+            <div class="bar-item"><span class="bar-value">0</span><div class="bar privacy-bar" style="height:0"></div><p>Privacy-Irrelevant</p></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section class="page-section" id="settings">
+      <div class="page-heading">
+        <h1>Settings</h1>
+        <p>Manage your account and application preferences.</p>
+      </div>
+
+      <div class="settings-panel">
+        <div class="settings-section">
+          <h3>Profile Information</h3>
+          <p>View your profile details.</p>
+          <div class="settings-field"><label>Account</label><input type="text" value="Login" readonly></div>
+          <div class="settings-field"><label>Project</label><input type="text" value="FORCORA" readonly></div>
+        </div>
+        <div class="settings-section">
+          <h3>Application Preferences</h3>
+          <p>Customize your dashboard experience.</p>
+          <div class="settings-option"><span>Show dashboard notifications</span><input type="checkbox" checked></div>
+          <div class="settings-option"><span>Enable review search</span><input type="checkbox" checked></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- HELP & SUPPORT -->
+    <section class="page-section" id="help">
+      <div class="page-heading">
+        <h1>Help & Support</h1>
+        <p>Find help and learn how to use FORCORA.</p>
+      </div>
+
+      <div class="help-grid">
+        <div class="help-card"><div class="panel-icon">?</div><h3>Getting Started</h3><p>Learn how to upload and classify customer reviews.</p></div>
+        <div class="help-card"><div class="panel-icon">▤</div><h3>CSV Upload Guide</h3><p>Prepare your CSV file with the required Review column.</p></div>
+        <div class="help-card"><div class="panel-icon">✉</div><h3>Contact Support</h3><p>Need help? Contact your project support team.</p></div>
+      </div>
+
+      <div class="settings-panel faq-panel">
+        <h3>Frequently Asked Questions</h3>
+        <details><summary>How do I upload multiple reviews?</summary><p>Open Upload Reviews and select a valid CSV file.</p></details>
+        <details><summary>Which CSV column is required?</summary><p>The review text column should be named Review.</p></details>
+        <details><summary>How can I view classified reviews?</summary><p>Open Review Explorer to search and filter reviews.</p></details>
+      </div>
+    </section>
+  </main>
+</div>
+
+<script src="script.js"></script>
 </body>
 </html>

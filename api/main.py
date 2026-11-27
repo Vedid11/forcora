@@ -1,4 +1,7 @@
+
 import os
+from contextlib import asynccontextmanager
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -6,13 +9,15 @@ from api.model import predict_review
 from api.schemas import ReviewRequest, PredictionResponse
 from api.bulk import router as bulk_router
 from api.database import SessionLocal, engine, Base
-from contextlib import asynccontextmanager
 from api.models import Review
 
+
+# Database initialization
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     Base.metadata.create_all(bind=engine)
     yield
+
 
 app = FastAPI(
     title="FORCORA API",
@@ -21,17 +26,26 @@ app = FastAPI(
     lifespan=lifespan
 )
 
+
+# Include Bulk Prediction Router
 app.include_router(bulk_router)
 
 
+# Frontend CORS configuration
 frontend_origins = [
     origin.strip()
     for origin in os.getenv(
         "FRONTEND_ORIGINS",
-        "http://localhost:3000,http://localhost:5173,http://127.0.0.1:5500,http://localhost:5500"
+        "http://localhost:3000,"
+        "http://localhost:5173,"
+        "http://127.0.0.1:5500,"
+        "http://localhost:5500,"
+        "http://127.0.0.1:5501,"
+        "http://localhost:5501"
     ).split(",")
     if origin.strip()
 ]
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -48,6 +62,7 @@ app.add_middleware(
 )
 
 
+# Home Route
 @app.get("/")
 def home():
     return {
@@ -56,6 +71,7 @@ def home():
     }
 
 
+# Health Check
 @app.get("/health")
 def health_check():
     return {
@@ -64,6 +80,7 @@ def health_check():
     }
 
 
+# Single Review Prediction
 @app.post("/predict", response_model=PredictionResponse)
 def predict(request: ReviewRequest):
 
